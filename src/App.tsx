@@ -113,9 +113,11 @@ function App() {
 
   const renderPlayControls = () => (
     <>
-      <button onClick={() => stopAnimation()}>Stop</button>
-      <label htmlFor="fps">FPS</label>
+      <label className="label" htmlFor="fps">
+        FPS
+      </label>
       <input
+        className="range range-xs"
         name="fps"
         type="range"
         min="0"
@@ -123,8 +125,11 @@ function App() {
         value={fps}
         onChange={(e) => setFps(parseInt(e.target.value, 10))}
       />
-      <label htmlFor="sampleSize">Sample Size</label>
+      <label className="label" htmlFor="sampleSize">
+        Sample Size
+      </label>
       <input
+        className="range range-xs"
         name="sampleSize"
         type="range"
         min="1"
@@ -137,9 +142,30 @@ function App() {
   );
 
   return (
-    <main>
+    <main className="flex flex-wrap gap-4 justify-center">
+      <div className="relative">
+        <canvas className="max-w-lg" ref={backgroundCanvasRef} />
+        <canvas
+          className="max-w-lg absolute bottom-0 left-0"
+          ref={foregroundCanvasRef}
+        />
+      </div>
       <div>
+        {isAnimating ? (
+          <button className="btn btn-primary" onClick={() => stopAnimation()}>
+            Stop
+          </button>
+        ) : (
+          <button className="btn btn-primary" onClick={() => startAnimation()}>
+            Play
+          </button>
+        )}
+        <label className="label" htmlFor="srcImage">
+          Source image
+        </label>
         <select
+          name="srcImage"
+          className="select"
           onChange={async (e) => {
             selectedImage.current = e.target.value;
             stopAnimation();
@@ -153,18 +179,7 @@ function App() {
             </option>
           ))}
         </select>
-        {isAnimating ? (
-          renderPlayControls()
-        ) : (
-          <button onClick={() => startAnimation()}>Play</button>
-        )}
-      </div>
-      <div className="relative">
-        <canvas ref={backgroundCanvasRef} />
-        <canvas
-          className="absolute bottom-0 left-0"
-          ref={foregroundCanvasRef}
-        />
+        {isAnimating && renderPlayControls()}
       </div>
     </main>
   );
