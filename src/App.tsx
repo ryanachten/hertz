@@ -1,16 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { IMAGE_OPTIONS } from "./constants/image";
+import { AudioServiceContext } from "./services/AudioService";
 
 function App() {
+  const audioServiceContext = useContext(AudioServiceContext);
   const selectedImage = useRef(IMAGE_OPTIONS[0].path);
   const [fps, setFps] = useState(24);
   const sampleSize = useRef(10);
   const fpsInterval = useRef(0);
-  const [hasStarted, setHasStarted] = useState(false);
   const [isAnimating, setAnimating] = useState(false);
-  const audioContext = useRef(new AudioContext());
-  const oscillator = useRef<OscillatorNode>();
-  const gainNode = useRef<GainNode>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>();
   const previousTime = useRef(0);
@@ -23,14 +21,7 @@ function App() {
   }, [fps]);
 
   const startAnimation = () => {
-    const osc = oscillator.current;
-    const gain = gainNode.current;
-    if (!gain || !osc) return;
-    if (!hasStarted) {
-      osc.start();
-      setHasStarted(true);
-    }
-    osc.connect(gain);
+    audioServiceContext.startOutput();
     previousTime.current = Date.now();
     animate();
     setAnimating(true);
@@ -38,7 +29,7 @@ function App() {
 
   const stopAnimation = () => {
     cancelAnimationFrame(currentFrame.current);
-    oscillator.current?.disconnect();
+    audioServiceContext.stopOutput();
     setAnimating(false);
   };
 
@@ -58,16 +49,15 @@ function App() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     const img = imageRef.current;
-    const osc = oscillator.current;
     const size = sampleSize.current;
 
-    if (!canvas || !ctx || !img || !osc) return;
+    if (!canvas || !ctx || !img) return;
     ctx.drawImage(img, 0, 0); // TODO: can probably create a more optimized reset using putImageData
     const { data } = ctx.getImageData(x.current, y.current, size, size);
 
     ctx.strokeRect(x.current, y.current, size, size);
 
-    osc.frequency.value = (data[0] + data[1] + data[2]) / 3; // TODO: this is actually only taking the brightness of the first pixel
+    audioServiceContext.updateOutput((data[0] + data[1] + data[2]) / 3); // TODO: this is actually only taking the brightness of the first pixel
 
     if (x.current + size >= canvas.width - 1) {
       x.current = 0;
@@ -104,21 +94,8 @@ function App() {
     });
   };
 
-  const setupAudio = () => {
-    const audio = audioContext.current;
-    const gain = audio.createGain();
-    gain.connect(audio.destination);
-
-    const osc = audio.createOscillator();
-
-    gainNode.current = gain;
-    oscillator.current = osc;
-  };
-
   useEffect(() => {
-    setupAudio();
     setupCanvas();
-
     return () => {
       stopAnimation();
     };
