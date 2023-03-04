@@ -9,7 +9,8 @@ function App() {
   const sampleSize = useRef(10);
   const fpsInterval = useRef(0);
   const [isAnimating, setAnimating] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const backgroundCanvasRef = useRef<HTMLCanvasElement>(null);
+  const foregroundCanvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>();
   const previousTime = useRef(0);
   const currentFrame = useRef(0);
@@ -46,23 +47,29 @@ function App() {
   };
 
   const frame = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const foreground = foregroundCanvasRef.current;
+    const foregroundCtx = foreground?.getContext("2d");
+    const backgroundCtx = backgroundCanvasRef.current?.getContext("2d");
     const img = imageRef.current;
     const size = sampleSize.current;
 
-    if (!canvas || !ctx || !img) return;
-    ctx.drawImage(img, 0, 0); // TODO: can probably create a more optimized reset using putImageData
-    const { data } = ctx.getImageData(x.current, y.current, size, size);
+    if (!foreground || !foregroundCtx || !backgroundCtx || !img) return;
+    foregroundCtx.clearRect(0, 0, foreground.width, foreground.height);
+    const { data } = backgroundCtx.getImageData(
+      x.current,
+      y.current,
+      size,
+      size
+    );
 
-    ctx.strokeRect(x.current, y.current, size, size);
+    foregroundCtx.strokeRect(x.current, y.current, size, size);
 
     audioServiceContext.updateOutput((data[0] + data[1] + data[2]) / 3); // TODO: this is actually only taking the brightness of the first pixel
 
-    if (x.current + size >= canvas.width - 1) {
+    if (x.current + size >= foreground.width - 1) {
       x.current = 0;
 
-      if (y.current + size >= canvas.height - 1) {
+      if (y.current + size >= foreground.height - 1) {
         y.current = 0;
       } else {
         y.current += size;
@@ -77,15 +84,18 @@ function App() {
       const img = new Image();
       img.src = selectedImage.current;
       img.crossOrigin = "anonymous";
-      const canvas = canvasRef.current;
-      const context = canvas?.getContext("2d");
+      const background = backgroundCanvasRef.current;
+      const foreground = foregroundCanvasRef.current;
+      const context = background?.getContext("2d");
 
-      if (!canvasRef.current || !context) return;
+      if (!background || !foreground || !context) return;
 
       img.addEventListener("load", () => {
-        if (!canvas || !context) return;
-        canvas.height = img.height;
-        canvas.width = img.width;
+        if (!background || !context) return;
+        background.height = img.height;
+        background.width = img.width;
+        foreground.height = img.height;
+        foreground.width = img.width;
         context.drawImage(img, 0, 0);
         imageRef.current = img;
 
@@ -149,7 +159,13 @@ function App() {
           <button onClick={() => startAnimation()}>Play</button>
         )}
       </div>
-      <canvas ref={canvasRef} />
+      <div className="relative">
+        <canvas ref={backgroundCanvasRef} />
+        <canvas
+          className="absolute bottom-0 left-0"
+          ref={foregroundCanvasRef}
+        />
+      </div>
     </main>
   );
 }
