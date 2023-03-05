@@ -15,7 +15,8 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
   const audioServiceContext = useContext(AudioServiceContext);
   const animationServiceContext = useContext(AnimationServiceContext);
 
-  const sampleSize = useSettingRef("sampleSize");
+  const sampleSizeRef = useSettingRef("sampleSize");
+  const sampleSize = useSelector(getSetting)("sampleSize");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const brightness = useSelector(getSetting)("brightness");
 
@@ -42,26 +43,41 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
     background.width = image.width;
     backgroundCtx.drawImage(img, 0, 0);
 
-    // Update brightness if set
-    if (brightness === 0) return;
-    const imageData = backgroundCtx.getImageData(
+    // Create image reduced by sample size
+    const w = background.width / sampleSize;
+    const h = background.height / sampleSize;
+    backgroundCtx.drawImage(img, 0, 0, w, h);
+
+    // Apply brightness transformations if needed
+    if (brightness !== 0) {
+      const imageData = backgroundCtx.getImageData(0, 0, w, h);
+      const data = imageData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        data[i] = data[i] + brightness; // red
+        data[i + 1] = data[i + 1] + brightness; // green
+        data[i + 2] = data[i + 2] + brightness; // blue
+      }
+      backgroundCtx.putImageData(imageData, 0, 0);
+    }
+
+    // Draw image scaled at sample size
+    backgroundCtx.imageSmoothingEnabled = false;
+    backgroundCtx.drawImage(
+      background,
+      0,
+      0,
+      w,
+      h,
       0,
       0,
       background.width,
       background.height
     );
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] = data[i] + brightness; // red
-      data[i + 1] = data[i + 1] + brightness; // green
-      data[i + 2] = data[i + 2] + brightness; // blue
-    }
-    backgroundCtx.putImageData(imageData, 0, 0);
-  }, [brightness, image]);
+  }, [brightness, image, sampleSize]);
 
   const handleFrame = () => {
     const backgroundCtx = canvasRef.current?.getContext("2d");
-    const size = sampleSize.current;
+    const size = sampleSizeRef.current;
 
     if (!backgroundCtx) return;
     const { data } = backgroundCtx.getImageData(
@@ -71,7 +87,7 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
       size
     );
 
-    audioServiceContext.updateOutput((data[0] + data[1] + data[2]) / 3); // TODO: this is actually only taking the brightness of the first pixel
+    audioServiceContext.updateOutput((data[0] + data[1] + data[2]) / 3);
   };
 
   return <canvas className="max-w-lg" ref={canvasRef} />;

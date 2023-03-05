@@ -15,7 +15,8 @@ function App() {
 
   const selectedImagePath = useRef(IMAGE_OPTIONS[0].path);
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement>();
-  const sampleSize = useSettingRef("sampleSize");
+  const sampleSizeRef = useSettingRef("sampleSize");
+  const sampleSize = useSelector(getSetting)("sampleSize");
   const fps = useSelector(getSetting)("fps");
 
   const [isAnimating, setAnimating] = useState(false);
@@ -26,6 +27,12 @@ function App() {
   useEffect(() => {
     animationServiceContext.fps = fps;
   }, [animationServiceContext, fps]);
+
+  // Reset x and y on sample size change to prevent alignment issues
+  useEffect(() => {
+    x.current = 0;
+    y.current = 0;
+  }, [sampleSize]);
 
   useEffect(() => {
     setupCanvas();
@@ -52,7 +59,7 @@ function App() {
   };
 
   const handleFrame = () => {
-    const size = sampleSize.current;
+    const size = sampleSizeRef.current;
     const image = imageRef.current;
 
     if (!image) return;

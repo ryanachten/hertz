@@ -41,7 +41,7 @@ export const RANGE_OPTIONS: RangeOption[] = [
     label: "Sample Size",
     key: "sampleSize",
     min: 1,
-    max: 100,
+    max: 99,
   },
   {
     label: "Brightness",
