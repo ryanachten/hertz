@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import AnimationControls from "./components/AnimationControls";
-import { IMAGE_OPTIONS } from "./constants/image";
+import { IMAGE_OPTIONS } from "./constants/settings";
 import useSettingRef from "./hooks/useSelectRef";
 import { getSetting } from "./selectors/settings.selectors";
 import { AnimationServiceContext } from "./services/AnimationService";
@@ -14,6 +14,7 @@ function App() {
   const selectedImage = useRef(IMAGE_OPTIONS[0].path);
   const sampleSize = useSettingRef("sampleSize");
   const fps = useSelector(getSetting)("fps");
+  const brightness = useSelector(getSetting)("brightness");
 
   const [isAnimating, setAnimating] = useState(false);
   const backgroundCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -25,6 +26,27 @@ function App() {
   useEffect(() => {
     animationServiceContext.fps = fps;
   }, [animationServiceContext, fps]);
+
+  useEffect(() => {
+    const background = backgroundCanvasRef.current;
+    const img = imageRef.current;
+    const backgroundCtx = background?.getContext("2d");
+    if (!background || !backgroundCtx || !img) return;
+    backgroundCtx.drawImage(img, 0, 0);
+    const imageData = backgroundCtx.getImageData(
+      0,
+      0,
+      background.width,
+      background.height
+    );
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      data[i] = data[i] + brightness; // red
+      data[i + 1] = data[i + 1] + brightness; // green
+      data[i + 2] = data[i + 2] + brightness; // blue
+    }
+    backgroundCtx.putImageData(imageData, 0, 0);
+  }, [brightness]);
 
   useEffect(() => {
     setupCanvas();

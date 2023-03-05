@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 export interface SettingsState {
   fps: number;
   sampleSize: number;
+  brightness: number;
 }
 
 export type SettingKey = keyof SettingsState;
@@ -11,6 +12,7 @@ export type SettingKey = keyof SettingsState;
 const initialState: SettingsState = {
   fps: 24,
   sampleSize: 10,
+  brightness: 0,
 };
 
 export const settingsSlice = createSlice({
@@ -19,12 +21,14 @@ export const settingsSlice = createSlice({
   reducers: {
     updateSetting: (
       state,
-      action: PayloadAction<{
+      {
+        payload,
+      }: PayloadAction<{
         key: SettingKey;
         value: number;
       }>
     ) => {
-      state[action.payload.key] = action.payload.value;
+      state[payload.key] = payload.value;
     },
   },
 });
