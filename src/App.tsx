@@ -1,52 +1,33 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { IMAGE_OPTIONS } from "./constants/image";
+import { AnimationServiceContext } from "./services/AnimationService";
 import { AudioServiceContext } from "./services/AudioService";
 
 function App() {
   const audioServiceContext = useContext(AudioServiceContext);
+  const animationServiceContext = useContext(AnimationServiceContext);
   const selectedImage = useRef(IMAGE_OPTIONS[0].path);
-  const [fps, setFps] = useState(24);
   const sampleSize = useRef(10);
-  const fpsInterval = useRef(0);
   const [isAnimating, setAnimating] = useState(false);
   const backgroundCanvasRef = useRef<HTMLCanvasElement>(null);
   const foregroundCanvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>();
-  const previousTime = useRef(0);
-  const currentFrame = useRef(0);
   const x = useRef(0);
   const y = useRef(0);
 
-  useEffect(() => {
-    fpsInterval.current = 1000 / fps;
-  }, [fps]);
-
-  const startAnimation = () => {
+  const startServices = () => {
     audioServiceContext.startOutput();
-    previousTime.current = Date.now();
-    animate();
+    animationServiceContext.startAnimation();
     setAnimating(true);
   };
 
-  const stopAnimation = () => {
-    cancelAnimationFrame(currentFrame.current);
+  const stopServices = () => {
     audioServiceContext.stopOutput();
+    animationServiceContext.stopAnimation();
     setAnimating(false);
   };
 
-  const animate = () => {
-    currentFrame.current = requestAnimationFrame(animate);
-
-    const now = Date.now();
-    const elapsed = now - previousTime.current;
-
-    if (elapsed > fpsInterval.current) {
-      previousTime.current = now - (elapsed % fpsInterval.current);
-      frame();
-    }
-  };
-
-  const frame = () => {
+  const handleFrame = () => {
     const foreground = foregroundCanvasRef.current;
     const foregroundCtx = foreground?.getContext("2d");
     const backgroundCtx = backgroundCanvasRef.current?.getContext("2d");
@@ -106,8 +87,13 @@ function App() {
 
   useEffect(() => {
     setupCanvas();
+    window.addEventListener(animationServiceContext.eventName, handleFrame);
     return () => {
-      stopAnimation();
+      stopServices();
+      window.removeEventListener(
+        animationServiceContext.eventName,
+        handleFrame
+      );
     };
   }, []);
 
@@ -121,9 +107,11 @@ function App() {
         name="fps"
         type="range"
         min="0"
+        defaultValue="24"
         max="50"
-        value={fps}
-        onChange={(e) => setFps(parseInt(e.target.value, 10))}
+        onChange={(e) => {
+          animationServiceContext.fps = parseInt(e.target.value, 10);
+        }}
       />
       <label className="label" htmlFor="sampleSize">
         Sample Size
@@ -152,11 +140,11 @@ function App() {
       </div>
       <div>
         {isAnimating ? (
-          <button className="btn btn-primary" onClick={() => stopAnimation()}>
+          <button className="btn btn-primary" onClick={() => stopServices()}>
             Stop
           </button>
         ) : (
-          <button className="btn btn-primary" onClick={() => startAnimation()}>
+          <button className="btn btn-primary" onClick={() => startServices()}>
             Play
           </button>
         )}
@@ -168,9 +156,7 @@ function App() {
           className="select"
           onChange={async (e) => {
             selectedImage.current = e.target.value;
-            stopAnimation();
             await setupCanvas();
-            startAnimation();
           }}
         >
           {IMAGE_OPTIONS.map((opt) => (

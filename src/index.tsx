@@ -8,15 +8,21 @@ import {
 } from "./services/AudioService";
 
 import "./index.css";
+import {
+  AnimationServiceContext,
+  AnimationServiceSingleton,
+} from "./services/AnimationService";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <AudioServiceContext.Provider value={AudioServiceSingleton}>
-      <App />
-    </AudioServiceContext.Provider>
+    <AnimationServiceContext.Provider value={AnimationServiceSingleton}>
+      <AudioServiceContext.Provider value={AudioServiceSingleton}>
+        <App />
+      </AudioServiceContext.Provider>
+    </AnimationServiceContext.Provider>
   </React.StrictMode>
 );
 
