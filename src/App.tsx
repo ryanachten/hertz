@@ -1,6 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import AnimationControls from "./components/AnimationControls";
+import BackgroundCanvas from "./components/BackgroundCanvas";
+import ForegroundCanvas from "./components/ForegroundCanvas";
 import { IMAGE_OPTIONS } from "./constants/settings";
 import useSettingRef from "./hooks/useSelectRef";
 import { getSetting } from "./selectors/settings.selectors";
@@ -11,14 +13,12 @@ function App() {
   const audioServiceContext = useContext(AudioServiceContext);
   const animationServiceContext = useContext(AnimationServiceContext);
 
-  const selectedImage = useRef(IMAGE_OPTIONS[0].path);
+  const selectedImagePath = useRef(IMAGE_OPTIONS[0].path);
+  const [selectedImage, setSelectedImage] = useState<HTMLImageElement>();
   const sampleSize = useSettingRef("sampleSize");
   const fps = useSelector(getSetting)("fps");
-  const brightness = useSelector(getSetting)("brightness");
 
   const [isAnimating, setAnimating] = useState(false);
-  const backgroundCanvasRef = useRef<HTMLCanvasElement>(null);
-  const foregroundCanvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>();
   const x = useRef(0);
   const y = useRef(0);
@@ -26,27 +26,6 @@ function App() {
   useEffect(() => {
     animationServiceContext.fps = fps;
   }, [animationServiceContext, fps]);
-
-  useEffect(() => {
-    const background = backgroundCanvasRef.current;
-    const img = imageRef.current;
-    const backgroundCtx = background?.getContext("2d");
-    if (!background || !backgroundCtx || !img) return;
-    backgroundCtx.drawImage(img, 0, 0);
-    const imageData = backgroundCtx.getImageData(
-      0,
-      0,
-      background.width,
-      background.height
-    );
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] = data[i] + brightness; // red
-      data[i + 1] = data[i + 1] + brightness; // green
-      data[i + 2] = data[i + 2] + brightness; // blue
-    }
-    backgroundCtx.putImageData(imageData, 0, 0);
-  }, [brightness]);
 
   useEffect(() => {
     setupCanvas();
@@ -73,29 +52,15 @@ function App() {
   };
 
   const handleFrame = () => {
-    const foreground = foregroundCanvasRef.current;
-    const foregroundCtx = foreground?.getContext("2d");
-    const backgroundCtx = backgroundCanvasRef.current?.getContext("2d");
-    const img = imageRef.current;
     const size = sampleSize.current;
+    const image = imageRef.current;
 
-    if (!foreground || !foregroundCtx || !backgroundCtx || !img) return;
-    foregroundCtx.clearRect(0, 0, foreground.width, foreground.height);
-    const { data } = backgroundCtx.getImageData(
-      x.current,
-      y.current,
-      size,
-      size
-    );
+    if (!image) return;
 
-    foregroundCtx.strokeRect(x.current, y.current, size, size);
-
-    audioServiceContext.updateOutput((data[0] + data[1] + data[2]) / 3); // TODO: this is actually only taking the brightness of the first pixel
-
-    if (x.current + size >= foreground.width - 1) {
+    if (x.current + size >= image.width - 1) {
       x.current = 0;
 
-      if (y.current + size >= foreground.height - 1) {
+      if (y.current + size >= image.height - 1) {
         y.current = 0;
       } else {
         y.current += size;
@@ -108,23 +73,12 @@ function App() {
   const setupCanvas = async () => {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.src = selectedImage.current;
+      img.src = selectedImagePath.current;
       img.crossOrigin = "anonymous";
-      const background = backgroundCanvasRef.current;
-      const foreground = foregroundCanvasRef.current;
-      const context = background?.getContext("2d");
-
-      if (!background || !foreground || !context) return;
 
       img.addEventListener("load", () => {
-        if (!background || !context) return;
-        background.height = img.height;
-        background.width = img.width;
-        foreground.height = img.height;
-        foreground.width = img.width;
-        context.drawImage(img, 0, 0);
+        setSelectedImage(img);
         imageRef.current = img;
-
         resolve(img);
       });
     });
@@ -132,13 +86,12 @@ function App() {
 
   return (
     <main className="flex flex-wrap gap-4 justify-center">
-      <div className="relative">
-        <canvas className="max-w-lg" ref={backgroundCanvasRef} />
-        <canvas
-          className="max-w-lg absolute bottom-0 left-0"
-          ref={foregroundCanvasRef}
-        />
-      </div>
+      {selectedImage !== undefined && (
+        <div className="relative">
+          <BackgroundCanvas image={selectedImage} x={x} y={y} />
+          <ForegroundCanvas image={selectedImage} x={x} y={y} />
+        </div>
+      )}
       <div>
         {isAnimating ? (
           <button className="btn btn-primary" onClick={() => stopServices()}>
@@ -156,7 +109,7 @@ function App() {
           name="srcImage"
           className="select"
           onChange={async (e) => {
-            selectedImage.current = e.target.value;
+            selectedImagePath.current = e.target.value;
             await setupCanvas();
           }}
         >
