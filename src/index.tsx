@@ -1,4 +1,5 @@
 import React from "react";
+import { Provider } from "react-redux";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
@@ -6,23 +7,26 @@ import {
   AudioServiceContext,
   AudioServiceSingleton,
 } from "./services/AudioService";
-
-import "./index.css";
 import {
   AnimationServiceContext,
   AnimationServiceSingleton,
 } from "./services/AnimationService";
+import { store } from "./store";
+
+import "./index.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <AnimationServiceContext.Provider value={AnimationServiceSingleton}>
-      <AudioServiceContext.Provider value={AudioServiceSingleton}>
-        <App />
-      </AudioServiceContext.Provider>
-    </AnimationServiceContext.Provider>
+    <Provider store={store}>
+      <AnimationServiceContext.Provider value={AnimationServiceSingleton}>
+        <AudioServiceContext.Provider value={AudioServiceSingleton}>
+          <App />
+        </AudioServiceContext.Provider>
+      </AnimationServiceContext.Provider>
+    </Provider>
   </React.StrictMode>
 );
 

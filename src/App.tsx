@@ -1,19 +1,42 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import AnimationControls from "./components/AnimationControls";
 import { IMAGE_OPTIONS } from "./constants/image";
+import useSettingRef from "./hooks/useSelectRef";
+import { getSetting } from "./selectors/settings.selectors";
 import { AnimationServiceContext } from "./services/AnimationService";
 import { AudioServiceContext } from "./services/AudioService";
 
 function App() {
   const audioServiceContext = useContext(AudioServiceContext);
   const animationServiceContext = useContext(AnimationServiceContext);
+
   const selectedImage = useRef(IMAGE_OPTIONS[0].path);
-  const sampleSize = useRef(10);
+  const sampleSize = useSettingRef("sampleSize");
+  const fps = useSelector(getSetting)("fps");
+
   const [isAnimating, setAnimating] = useState(false);
   const backgroundCanvasRef = useRef<HTMLCanvasElement>(null);
   const foregroundCanvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>();
   const x = useRef(0);
   const y = useRef(0);
+
+  useEffect(() => {
+    animationServiceContext.fps = fps;
+  }, [animationServiceContext, fps]);
+
+  useEffect(() => {
+    setupCanvas();
+    window.addEventListener(animationServiceContext.eventName, handleFrame);
+    return () => {
+      stopServices();
+      window.removeEventListener(
+        animationServiceContext.eventName,
+        handleFrame
+      );
+    };
+  }, []);
 
   const startServices = () => {
     audioServiceContext.startOutput();
@@ -85,50 +108,6 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    setupCanvas();
-    window.addEventListener(animationServiceContext.eventName, handleFrame);
-    return () => {
-      stopServices();
-      window.removeEventListener(
-        animationServiceContext.eventName,
-        handleFrame
-      );
-    };
-  }, []);
-
-  const renderPlayControls = () => (
-    <>
-      <label className="label" htmlFor="fps">
-        FPS
-      </label>
-      <input
-        className="range range-xs"
-        name="fps"
-        type="range"
-        min="0"
-        defaultValue="24"
-        max="50"
-        onChange={(e) => {
-          animationServiceContext.fps = parseInt(e.target.value, 10);
-        }}
-      />
-      <label className="label" htmlFor="sampleSize">
-        Sample Size
-      </label>
-      <input
-        className="range range-xs"
-        name="sampleSize"
-        type="range"
-        min="1"
-        max="100"
-        onChange={(e) => {
-          sampleSize.current = parseInt(e.target.value, 10);
-        }}
-      />
-    </>
-  );
-
   return (
     <main className="flex flex-wrap gap-4 justify-center">
       <div className="relative">
@@ -165,7 +144,7 @@ function App() {
             </option>
           ))}
         </select>
-        {isAnimating && renderPlayControls()}
+        {isAnimating && <AnimationControls />}
       </div>
     </main>
   );
