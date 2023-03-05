@@ -16,6 +16,13 @@ export const IMAGE_OPTIONS: ImageOption[] = [
   },
 ];
 
+export const WAVEFORM_OPTIONS: OscillatorType[] = [
+  "sine",
+  "triangle",
+  "square",
+  "sawtooth",
+];
+
 export type RangeOption = {
   label: string;
   key: SettingKey;

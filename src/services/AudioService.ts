@@ -25,6 +25,10 @@ class AudioService {
   public updateOutput(value: number) {
     this._oscillatorNode.frequency.value = value;
   }
+
+  public updateWaveform(value: OscillatorType) {
+    this._oscillatorNode.type = value;
+  }
 }
 
 export const AudioServiceSingleton = new AudioService();
