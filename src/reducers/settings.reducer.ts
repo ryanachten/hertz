@@ -5,14 +5,20 @@ export interface SettingsState {
   fps: number;
   sampleSize: number;
   brightness: number;
+  release: number;
+  attack: number;
+  sweep: number;
 }
 
 export type SettingKey = keyof SettingsState;
 
 const initialState: SettingsState = {
-  fps: 24,
+  fps: 5,
   sampleSize: 10,
   brightness: 0,
+  release: 50,
+  attack: 20,
+  sweep: 2,
 };
 
 export const settingsSlice = createSlice({

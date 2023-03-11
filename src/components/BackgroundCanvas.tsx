@@ -16,6 +16,9 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
   const animationServiceContext = useContext(AnimationServiceContext);
 
   const sampleSizeRef = useSettingRef("sampleSize");
+  const releaseRef = useSettingRef("release");
+  const attackRef = useSettingRef("attack");
+  const sweepRef = useSettingRef("sweep");
   const sampleSize = useSelector(getSetting)("sampleSize");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const brightness = useSelector(getSetting)("brightness");
@@ -87,7 +90,12 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
       size
     );
 
-    audioServiceContext.updateOutput((data[0] + data[1] + data[2]) / 3);
+    audioServiceContext.playNote({
+      frequency: (data[0] + data[1] + data[2]) / 3,
+      releaseTime: releaseRef.current / 100,
+      attackTime: attackRef.current / 100,
+      sweepLength: sweepRef.current,
+    });
   };
 
   return <canvas className="max-w-lg" ref={canvasRef} />;

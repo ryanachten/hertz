@@ -44,6 +44,24 @@ export const RANGE_OPTIONS: RangeOption[] = [
     max: 99,
   },
   {
+    label: "Release Time",
+    key: "release",
+    min: 1,
+    max: 200,
+  },
+  {
+    label: "Attack Time",
+    key: "attack",
+    min: 1,
+    max: 200,
+  },
+  {
+    label: "Sweep Length",
+    key: "sweep",
+    min: 1,
+    max: 10,
+  },
+  {
     label: "Brightness",
     key: "brightness",
     min: -100,

@@ -7,10 +7,8 @@ import { IMAGE_OPTIONS } from "./constants/settings";
 import useSettingRef from "./hooks/useSelectRef";
 import { getSetting } from "./selectors/settings.selectors";
 import { AnimationServiceContext } from "./services/AnimationService";
-import { AudioServiceContext } from "./services/AudioService";
 
 function App() {
-  const audioServiceContext = useContext(AudioServiceContext);
   const animationServiceContext = useContext(AnimationServiceContext);
 
   const selectedImagePath = useRef(IMAGE_OPTIONS[0].path);
@@ -47,13 +45,11 @@ function App() {
   }, []);
 
   const startServices = () => {
-    audioServiceContext.startOutput();
     animationServiceContext.startAnimation();
     setAnimating(true);
   };
 
   const stopServices = () => {
-    audioServiceContext.stopOutput();
     animationServiceContext.stopAnimation();
     setAnimating(false);
   };

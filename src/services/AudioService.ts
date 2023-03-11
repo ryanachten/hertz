@@ -1,33 +1,35 @@
 import { createContext } from "react";
 
+export type Note = {
+  frequency: number;
+  releaseTime: number;
+  attackTime: number;
+  sweepLength: number;
+};
+
 class AudioService {
   private readonly _context = new AudioContext();
-  private readonly _gainNode = this._context.createGain();
-  private readonly _oscillatorNode = this._context.createOscillator();
-  private _hasStarted = false;
+  private _waveform: OscillatorType = "sine";
 
-  constructor() {
-    this._gainNode.connect(this._context.destination);
-  }
+  public playNote({ frequency, attackTime, sweepLength, releaseTime }: Note) {
+    const time = this._context.currentTime;
+    const osc = new OscillatorNode(this._context, {
+      type: this._waveform,
+      frequency,
+    });
+    const gain = new GainNode(this._context);
+    gain.gain.cancelScheduledValues(time);
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(1, time + attackTime);
+    gain.gain.linearRampToValueAtTime(0, time + sweepLength - releaseTime);
 
-  public startOutput() {
-    if (!this._hasStarted) {
-      this._oscillatorNode.start();
-      this._hasStarted = true;
-    }
-    this._oscillatorNode.connect(this._gainNode);
-  }
-
-  public stopOutput() {
-    this._oscillatorNode.disconnect();
-  }
-
-  public updateOutput(value: number) {
-    this._oscillatorNode.frequency.value = value;
+    osc.connect(gain).connect(this._context.destination);
+    osc.start(time);
+    osc.stop(time + sweepLength);
   }
 
   public updateWaveform(value: OscillatorType) {
-    this._oscillatorNode.type = value;
+    this._waveform = value;
   }
 }
 
