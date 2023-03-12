@@ -23,7 +23,7 @@ const RangeControl = ({
     </label>
     <div className="flex items-center">
       <input
-        className="range range-xs mr-4"
+        className={`range range-xs mr-4 ${disabled ? "opacity-20" : ""}`}
         id={id}
         type="range"
         min={min}

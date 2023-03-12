@@ -1,7 +1,7 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRangeSettingRef } from "../hooks/useSelectorRef";
-import { updateColour } from "../reducers/animation.reducer";
+import { updateColour, updateNote } from "../reducers/animation.reducer";
 import { getRangeSetting } from "../selectors/settings.selectors";
 import { AnimationServiceContext } from "../services/AnimationService";
 import { AudioServiceContext } from "../services/AudioService";
@@ -92,12 +92,14 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
       })
     );
 
-    audioServiceContext.playNote({
-      frequency: (red + green + blue) / 3,
+    const note = audioServiceContext.playSample({
+      rgb: (red + green + blue) / 3,
       releaseTime: releaseRef.current / 100,
       attackTime: attackRef.current / 100,
       sweepLength: sweepRef.current,
     });
+
+    dispatch(updateNote(note));
   };
 
   return <canvas className="max-w-lg" ref={canvasRef} />;
