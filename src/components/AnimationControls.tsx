@@ -47,15 +47,16 @@ const AnimationControls = () => {
           />
         </label>
       </div>
-
-      <RangeControl
-        id="AutoplayInterval"
-        label="Autoplay Interval"
-        min={AUTOPLAY_INTERVAL_SETTINGS.min}
-        max={AUTOPLAY_INTERVAL_SETTINGS.max}
-        value={autoplayInterval}
-        onChange={(value) => dispatch(updateAutoplayInterval(value))}
-      />
+      {autoplay && (
+        <RangeControl
+          id="AutoplayInterval"
+          label="Autoplay Interval"
+          min={AUTOPLAY_INTERVAL_SETTINGS.min}
+          max={AUTOPLAY_INTERVAL_SETTINGS.max}
+          value={autoplayInterval}
+          onChange={(value) => dispatch(updateAutoplayInterval(value))}
+        />
+      )}
       <SelectControl
         label="Waveform"
         id="waveform"

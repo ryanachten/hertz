@@ -21,18 +21,29 @@ const RangeControl = ({
     <label className="label" htmlFor={id}>
       {label}
     </label>
-    <input
-      className="range range-xs"
-      id={id}
-      type="range"
-      min={min}
-      value={value}
-      max={max}
-      disabled={disabled}
-      onChange={(e) => {
-        onChange(parseInt(e.target.value, 10));
-      }}
-    />
+    <div className="flex items-center">
+      <input
+        className="range range-xs mr-4"
+        id={id}
+        type="range"
+        min={min}
+        value={value}
+        max={max}
+        disabled={disabled}
+        onChange={(e) => {
+          onChange(parseInt(e.target.value, 10));
+        }}
+      />
+      <input
+        className="input w-24"
+        type="number"
+        value={value}
+        disabled={disabled}
+        onChange={(e) => {
+          onChange(parseInt(e.target.value, 10));
+        }}
+      />
+    </div>
   </div>
 );
 export default RangeControl;

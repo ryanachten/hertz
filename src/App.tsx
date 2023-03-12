@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import AnimationControls from "./components/AnimationControls";
 import BackgroundCanvas from "./components/BackgroundCanvas";
 import ForegroundCanvas from "./components/ForegroundCanvas";
+import StatsContainer from "./components/StatsContainer";
 import { IMAGE_OPTIONS } from "./constants/settings";
 import useDispatchRandomSettings from "./hooks/useDispatchRandomSettings";
 import useSelectorRef, { useRangeSettingRef } from "./hooks/useSelectorRef";
@@ -19,7 +20,6 @@ function App() {
   const selectedImagePath = useRef(IMAGE_OPTIONS[0].path);
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement>();
   const sampleSizeRef = useRangeSettingRef("sampleSize");
-  // const sampleSize = useSelector(getRangeSetting)("sampleSize");
   const fps = useSelector(getRangeSetting)("fps");
 
   const [isAnimating, setAnimating] = useState(false);
@@ -36,13 +36,6 @@ function App() {
   useEffect(() => {
     animationServiceContext.fps = fps;
   }, [animationServiceContext, fps]);
-
-  // TODO: find a better solution that works with autoplay
-  // Reset x and y on sample size change to prevent alignment issues
-  // useEffect(() => {
-  //   x.current = 0;
-  //   y.current = 0;
-  // }, [sampleSize]);
 
   useEffect(() => {
     setupCanvas();
@@ -106,12 +99,15 @@ function App() {
 
   return (
     <main className="flex flex-wrap gap-4 justify-center">
-      {selectedImage !== undefined && (
-        <div className="relative">
-          <BackgroundCanvas image={selectedImage} x={x} y={y} />
-          <ForegroundCanvas image={selectedImage} x={x} y={y} />
-        </div>
-      )}
+      <div>
+        {selectedImage !== undefined && (
+          <div className="relative">
+            <BackgroundCanvas image={selectedImage} x={x} y={y} />
+            <ForegroundCanvas image={selectedImage} x={x} y={y} />
+          </div>
+        )}
+        <StatsContainer />
+      </div>
       <div>
         {isAnimating ? (
           <button className="btn btn-primary" onClick={() => stopServices()}>

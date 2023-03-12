@@ -1,6 +1,7 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRangeSettingRef } from "../hooks/useSelectorRef";
+import { updateColour } from "../reducers/animation.reducer";
 import { getRangeSetting } from "../selectors/settings.selectors";
 import { AnimationServiceContext } from "../services/AnimationService";
 import { AudioServiceContext } from "../services/AudioService";
@@ -12,6 +13,7 @@ export interface IBackgroundCanvas {
 }
 
 const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
+  const dispatch = useDispatch();
   const audioServiceContext = useContext(AudioServiceContext);
   const animationServiceContext = useContext(AnimationServiceContext);
 
@@ -76,8 +78,22 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
       size
     );
 
+    // This just samples the first pixel in the sample range
+    // TODO: look at getting an average or median
+    const red = data[0];
+    const green = data[1];
+    const blue = data[2];
+
+    dispatch(
+      updateColour({
+        red,
+        green,
+        blue,
+      })
+    );
+
     audioServiceContext.playNote({
-      frequency: (data[0] + data[1] + data[2]) / 3,
+      frequency: (red + green + blue) / 3,
       releaseTime: releaseRef.current / 100,
       attackTime: attackRef.current / 100,
       sweepLength: sweepRef.current,
