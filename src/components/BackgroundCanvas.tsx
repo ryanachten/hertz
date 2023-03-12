@@ -1,7 +1,7 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import useSettingRef from "../hooks/useSelectRef";
-import { getSetting } from "../selectors/settings.selectors";
+import { useRangeSettingRef } from "../hooks/useSelectorRef";
+import { getRangeSetting } from "../selectors/settings.selectors";
 import { AnimationServiceContext } from "../services/AnimationService";
 import { AudioServiceContext } from "../services/AudioService";
 
@@ -15,13 +15,13 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
   const audioServiceContext = useContext(AudioServiceContext);
   const animationServiceContext = useContext(AnimationServiceContext);
 
-  const sampleSizeRef = useSettingRef("sampleSize");
-  const releaseRef = useSettingRef("release");
-  const attackRef = useSettingRef("attack");
-  const sweepRef = useSettingRef("sweep");
-  const sampleSize = useSelector(getSetting)("sampleSize");
+  const sampleSizeRef = useRangeSettingRef("sampleSize");
+  const releaseRef = useRangeSettingRef("release");
+  const attackRef = useRangeSettingRef("attack");
+  const sweepRef = useRangeSettingRef("sweep");
+  const sampleSize = useSelector(getRangeSetting)("sampleSize");
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const brightness = useSelector(getSetting)("brightness");
+  const brightness = useSelector(getRangeSetting)("brightness");
 
   // Setup animation handler
   useEffect(() => {

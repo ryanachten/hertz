@@ -4,8 +4,13 @@ import AnimationControls from "./components/AnimationControls";
 import BackgroundCanvas from "./components/BackgroundCanvas";
 import ForegroundCanvas from "./components/ForegroundCanvas";
 import { IMAGE_OPTIONS } from "./constants/settings";
-import useSettingRef from "./hooks/useSelectRef";
-import { getSetting } from "./selectors/settings.selectors";
+import useDispatchRandomSettings from "./hooks/useDispatchRandomSettings";
+import useSelectorRef, { useRangeSettingRef } from "./hooks/useSelectorRef";
+import {
+  getAutoplayInterval,
+  getRangeSetting,
+  isAutoplaying,
+} from "./selectors/settings.selectors";
 import { AnimationServiceContext } from "./services/AnimationService";
 
 function App() {
@@ -13,24 +18,31 @@ function App() {
 
   const selectedImagePath = useRef(IMAGE_OPTIONS[0].path);
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement>();
-  const sampleSizeRef = useSettingRef("sampleSize");
-  const sampleSize = useSelector(getSetting)("sampleSize");
-  const fps = useSelector(getSetting)("fps");
+  const sampleSizeRef = useRangeSettingRef("sampleSize");
+  // const sampleSize = useSelector(getRangeSetting)("sampleSize");
+  const fps = useSelector(getRangeSetting)("fps");
 
   const [isAnimating, setAnimating] = useState(false);
   const imageRef = useRef<HTMLImageElement>();
   const x = useRef(0);
   const y = useRef(0);
+  const tickRef = useRef(0);
+  const [tick, setTick] = useState(0);
+  const isAutoplayingRef = useSelectorRef(isAutoplaying);
+  const autoplayInterval = useSelector(getAutoplayInterval);
+
+  useDispatchRandomSettings(tick, autoplayInterval);
 
   useEffect(() => {
     animationServiceContext.fps = fps;
   }, [animationServiceContext, fps]);
 
+  // TODO: find a better solution that works with autoplay
   // Reset x and y on sample size change to prevent alignment issues
-  useEffect(() => {
-    x.current = 0;
-    y.current = 0;
-  }, [sampleSize]);
+  // useEffect(() => {
+  //   x.current = 0;
+  //   y.current = 0;
+  // }, [sampleSize]);
 
   useEffect(() => {
     setupCanvas();
@@ -55,6 +67,11 @@ function App() {
   };
 
   const handleFrame = () => {
+    if (isAutoplayingRef.current) {
+      tickRef.current++;
+      setTick(tickRef.current);
+    }
+
     const size = sampleSizeRef.current;
     const image = imageRef.current;
 
@@ -105,23 +122,25 @@ function App() {
             Play
           </button>
         )}
-        <label className="label" htmlFor="srcImage">
-          Source image
-        </label>
-        <select
-          name="srcImage"
-          className="select"
-          onChange={async (e) => {
-            selectedImagePath.current = e.target.value;
-            await setupCanvas();
-          }}
-        >
-          {IMAGE_OPTIONS.map((opt) => (
-            <option key={opt.path} value={opt.path}>
-              {opt.name}
-            </option>
-          ))}
-        </select>
+        <div className="form-control">
+          <label className="label" htmlFor="srcImage">
+            Source image
+          </label>
+          <select
+            name="srcImage"
+            className="select"
+            onChange={async (e) => {
+              selectedImagePath.current = e.target.value;
+              await setupCanvas();
+            }}
+          >
+            {IMAGE_OPTIONS.map((opt) => (
+              <option key={opt.path} value={opt.path}>
+                {opt.name}
+              </option>
+            ))}
+          </select>
+        </div>
         {isAnimating && <AnimationControls />}
       </div>
     </main>

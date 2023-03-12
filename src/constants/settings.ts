@@ -1,4 +1,4 @@
-import { SettingKey } from "../reducers/settings.reducer";
+import { RangeSettingKey } from "../reducers/settings.reducer";
 
 export type ImageOption = {
   name: string;
@@ -25,7 +25,7 @@ export const WAVEFORM_OPTIONS: OscillatorType[] = [
 
 export type RangeOption = {
   label: string;
-  key: SettingKey;
+  key: RangeSettingKey;
   min: number;
   max: number;
 };
@@ -34,7 +34,7 @@ export const RANGE_OPTIONS: RangeOption[] = [
   {
     label: "FPS",
     key: "fps",
-    min: 0,
+    min: 1,
     max: 50,
   },
   {

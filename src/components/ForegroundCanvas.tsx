@@ -1,5 +1,5 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
-import useSettingRef from "../hooks/useSelectRef";
+import { useRangeSettingRef } from "../hooks/useSelectorRef";
 import { AnimationServiceContext } from "../services/AnimationService";
 
 export interface IBackgroundCanvas {
@@ -11,7 +11,7 @@ export interface IBackgroundCanvas {
 const ForegroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
   const animationServiceContext = useContext(AnimationServiceContext);
 
-  const sampleSize = useSettingRef("sampleSize");
+  const sampleSize = useRangeSettingRef("sampleSize");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Setup animation handler
@@ -45,9 +45,7 @@ const ForegroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
     foregroundCtx.strokeRect(x.current, y.current, size, size);
   };
 
-  return (
-    <canvas className="max-w-lg absolute bottom-0 left-0" ref={canvasRef} />
-  );
+  return <canvas className="max-w-lg absolute top-0 left-0" ref={canvasRef} />;
 };
 
 export default ForegroundCanvas;

@@ -1,5 +1,11 @@
-import { SettingKey } from "../reducers/settings.reducer";
+import { RangeSettingKey } from "../reducers/settings.reducer";
 import { RootState } from "../store";
 
-export const getSetting = (state: RootState) => (key: SettingKey) =>
-  state.settings[key];
+export const getRangeSetting =
+  ({ settings }: RootState) =>
+  (key: RangeSettingKey) =>
+    settings.rangeSettings[key];
+
+export const isAutoplaying = ({ settings }: RootState) => settings.autoplay;
+export const getAutoplayInterval = ({ settings }: RootState) =>
+  settings.autoplayInterval;
