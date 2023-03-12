@@ -9,3 +9,5 @@ export const getRangeSetting =
 export const isAutoplaying = ({ settings }: RootState) => settings.autoplay;
 export const getAutoplayInterval = ({ settings }: RootState) =>
   settings.autoplayInterval;
+
+export const getWaveform = ({ settings }: RootState) => settings.waveform;

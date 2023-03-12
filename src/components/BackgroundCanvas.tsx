@@ -46,14 +46,14 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
     background.width = image.width;
     backgroundCtx.drawImage(img, 0, 0);
 
-    // Create image reduced by sample size
-    const w = background.width / sampleSize;
-    const h = background.height / sampleSize;
-    backgroundCtx.drawImage(img, 0, 0, w, h);
-
     // Apply brightness transformations if needed
     if (brightness !== 0) {
-      const imageData = backgroundCtx.getImageData(0, 0, w, h);
+      const imageData = backgroundCtx.getImageData(
+        0,
+        0,
+        background.width,
+        background.height
+      );
       const data = imageData.data;
       for (let i = 0; i < data.length; i += 4) {
         data[i] = data[i] + brightness; // red
@@ -62,20 +62,6 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
       }
       backgroundCtx.putImageData(imageData, 0, 0);
     }
-
-    // Draw image scaled at sample size
-    backgroundCtx.imageSmoothingEnabled = false;
-    backgroundCtx.drawImage(
-      background,
-      0,
-      0,
-      w,
-      h,
-      0,
-      0,
-      background.width,
-      background.height
-    );
   }, [brightness, image, sampleSize]);
 
   const handleFrame = () => {

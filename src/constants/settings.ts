@@ -23,6 +23,11 @@ export const WAVEFORM_OPTIONS: OscillatorType[] = [
   "sawtooth",
 ];
 
+export const AUTOPLAY_INTERVAL_SETTINGS = {
+  min: 1,
+  max: 50,
+};
+
 export type RangeOption = {
   label: string;
   key: RangeSettingKey;
@@ -35,7 +40,7 @@ export const RANGE_OPTIONS: RangeOption[] = [
     label: "FPS",
     key: "fps",
     min: 1,
-    max: 50,
+    max: 25,
   },
   {
     label: "Sample Size",

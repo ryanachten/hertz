@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 export interface SettingsState {
   autoplay: boolean;
   autoplayInterval: number;
+  waveform: OscillatorType;
   rangeSettings: RangeSettings;
 }
 
@@ -21,6 +22,7 @@ export type RangeSettingKey = keyof RangeSettings;
 const initialState: SettingsState = {
   autoplay: true,
   autoplayInterval: 4,
+  waveform: "sine",
   rangeSettings: {
     fps: 5,
     sampleSize: 10,
@@ -52,9 +54,16 @@ export const settingsSlice = createSlice({
     updateAutoplayInterval: (state, { payload }: PayloadAction<number>) => {
       state.autoplayInterval = payload;
     },
+    updateWaveform: (state, { payload }: PayloadAction<OscillatorType>) => {
+      state.waveform = payload;
+    },
   },
 });
 
-export const { updateRangeSetting, updateAutoplay, updateAutoplayInterval } =
-  settingsSlice.actions;
+export const {
+  updateRangeSetting,
+  updateAutoplay,
+  updateAutoplayInterval,
+  updateWaveform,
+} = settingsSlice.actions;
 export default settingsSlice.reducer;
