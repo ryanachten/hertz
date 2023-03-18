@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/hertz/static/css/main.3b7b2d64.css",
-    "main.js": "/hertz/static/js/main.c0bf3a3b.js",
+    "main.css": "/hertz/static/css/main.4e3b9b20.css",
+    "main.js": "/hertz/static/js/main.60b9dedc.js",
     "static/js/787.fd88af5a.chunk.js": "/hertz/static/js/787.fd88af5a.chunk.js",
     "index.html": "/hertz/index.html",
-    "main.3b7b2d64.css.map": "/hertz/static/css/main.3b7b2d64.css.map",
-    "main.c0bf3a3b.js.map": "/hertz/static/js/main.c0bf3a3b.js.map",
+    "main.4e3b9b20.css.map": "/hertz/static/css/main.4e3b9b20.css.map",
+    "main.60b9dedc.js.map": "/hertz/static/js/main.60b9dedc.js.map",
     "787.fd88af5a.chunk.js.map": "/hertz/static/js/787.fd88af5a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3b7b2d64.css",
-    "static/js/main.c0bf3a3b.js"
+    "static/css/main.4e3b9b20.css",
+    "static/js/main.60b9dedc.js"
   ]
 }
