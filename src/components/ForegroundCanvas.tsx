@@ -1,6 +1,6 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import { useRangeSettingRef } from "../hooks/useSelectorRef";
-import { AnimationServiceContext } from "../services/AnimationService";
+import { AudioAnimationContext } from "../services/AnimationService";
 
 export interface IBackgroundCanvas {
   image: HTMLImageElement;
@@ -9,7 +9,7 @@ export interface IBackgroundCanvas {
 }
 
 const ForegroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
-  const animationServiceContext = useContext(AnimationServiceContext);
+  const animationServiceContext = useContext(AudioAnimationContext);
 
   const sampleSize = useRangeSettingRef("sampleSize");
   const canvasRef = useRef<HTMLCanvasElement>(null);

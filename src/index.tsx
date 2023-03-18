@@ -8,8 +8,10 @@ import {
   AudioServiceSingleton,
 } from "./services/AudioService";
 import {
-  AnimationServiceContext,
-  AnimationServiceSingleton,
+  AudioAnimationContext,
+  AudioAnimation,
+  StandardAnimation,
+  StandardAnimationContext,
 } from "./services/AnimationService";
 import { store } from "./store";
 
@@ -21,11 +23,13 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <AnimationServiceContext.Provider value={AnimationServiceSingleton}>
-        <AudioServiceContext.Provider value={AudioServiceSingleton}>
-          <App />
-        </AudioServiceContext.Provider>
-      </AnimationServiceContext.Provider>
+      <StandardAnimationContext.Provider value={StandardAnimation}>
+        <AudioAnimationContext.Provider value={AudioAnimation}>
+          <AudioServiceContext.Provider value={AudioServiceSingleton}>
+            <App />
+          </AudioServiceContext.Provider>
+        </AudioAnimationContext.Provider>
+      </StandardAnimationContext.Provider>
     </Provider>
   </React.StrictMode>
 );

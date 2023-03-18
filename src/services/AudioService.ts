@@ -10,8 +10,12 @@ export type Sample = {
 
 class AudioService {
   private readonly _context = new AudioContext();
+  private readonly _analyser = this._context.createAnalyser();
   private _waveform: OscillatorType = "sine";
 
+  /**
+   * Plays as an audio sample given various parameters
+   */
   public playSample({
     rgb,
     attackTime,
@@ -32,14 +36,30 @@ class AudioService {
     gain.gain.linearRampToValueAtTime(0, time + sweepLength - releaseTime);
 
     osc.connect(gain).connect(this._context.destination);
+    gain.connect(this._analyser);
     osc.start(time);
     osc.stop(time + sweepLength);
 
     return note;
   }
 
+  /**
+   * Update the waveform used by the oscillator
+   */
   public updateWaveform(value: OscillatorType) {
     this._waveform = value;
+  }
+
+  /**
+   * Uses an audio analyser to sample frequency data
+   */
+  public getFrequencyData() {
+    const bufferLength = this._analyser.frequencyBinCount;
+
+    const timeDomainData = new Uint8Array(bufferLength);
+    this._analyser.getByteFrequencyData(timeDomainData);
+
+    return timeDomainData;
   }
 
   /**

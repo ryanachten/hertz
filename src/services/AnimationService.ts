@@ -1,15 +1,18 @@
 import { createContext } from "react";
 
 class AnimationService {
-  public readonly eventName = "AnimationServiceEvent";
+  public readonly eventName: string;
   public fps = 24;
   public isAnimating = false;
 
-  private readonly _animationEvent = new CustomEvent(this.eventName);
   private _previousTime = 0;
   private _currentFrame = 0;
+  private readonly _animationEvent: CustomEvent;
 
-  private fpsInterval = () => 1000 / this.fps;
+  constructor(serviceName: string) {
+    this.eventName = serviceName;
+    this._animationEvent = new CustomEvent(this.eventName);
+  }
 
   public startAnimation() {
     this._previousTime = Date.now();
@@ -36,7 +39,12 @@ class AnimationService {
       dispatchEvent(this._animationEvent);
     }
   }
+
+  private fpsInterval = () => 1000 / this.fps;
 }
 
-export const AnimationServiceSingleton = new AnimationService();
-export const AnimationServiceContext = createContext(AnimationServiceSingleton);
+export const StandardAnimation = new AnimationService("StandardAnimation");
+export const StandardAnimationContext = createContext(StandardAnimation);
+
+export const AudioAnimation = new AnimationService("AudioAnimation");
+export const AudioAnimationContext = createContext(AudioAnimation);

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRangeSettingRef } from "../hooks/useSelectorRef";
 import { updateColour, updateNote } from "../reducers/animation.reducer";
 import { getRangeSetting } from "../selectors/settings.selectors";
-import { AnimationServiceContext } from "../services/AnimationService";
+import { AudioAnimationContext } from "../services/AnimationService";
 import { AudioServiceContext } from "../services/AudioService";
 
 export interface IBackgroundCanvas {
@@ -15,7 +15,7 @@ export interface IBackgroundCanvas {
 const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
   const dispatch = useDispatch();
   const audioServiceContext = useContext(AudioServiceContext);
-  const animationServiceContext = useContext(AnimationServiceContext);
+  const animationServiceContext = useContext(AudioAnimationContext);
 
   const sampleSizeRef = useRangeSettingRef("sampleSize");
   const releaseRef = useRangeSettingRef("release");
@@ -34,6 +34,7 @@ const BackgroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
         handleFrame
       );
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Draw image

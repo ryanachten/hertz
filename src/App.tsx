@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import AnimationControls from "./components/AnimationControls";
+import AudioCanvas from "./components/AudioCanvas";
 import BackgroundCanvas from "./components/BackgroundCanvas";
 import ForegroundCanvas from "./components/ForegroundCanvas";
 import StatsContainer from "./components/StatsContainer";
@@ -12,10 +13,14 @@ import {
   getRangeSetting,
   isAutoplaying,
 } from "./selectors/settings.selectors";
-import { AnimationServiceContext } from "./services/AnimationService";
+import {
+  AudioAnimationContext,
+  StandardAnimationContext,
+} from "./services/AnimationService";
 
 function App() {
-  const animationServiceContext = useContext(AnimationServiceContext);
+  const audioAnimation = useContext(AudioAnimationContext);
+  const standardAnimation = useContext(StandardAnimationContext);
 
   const selectedImagePath = useRef(IMAGE_OPTIONS[0].path);
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement>();
@@ -34,28 +39,27 @@ function App() {
   useDispatchRandomSettings(tick, autoplayInterval);
 
   useEffect(() => {
-    animationServiceContext.fps = fps;
-  }, [animationServiceContext, fps]);
+    audioAnimation.fps = fps;
+  }, [audioAnimation, fps]);
 
   useEffect(() => {
     setupCanvas();
-    window.addEventListener(animationServiceContext.eventName, handleFrame);
+    window.addEventListener(audioAnimation.eventName, handleFrame);
     return () => {
       stopServices();
-      window.removeEventListener(
-        animationServiceContext.eventName,
-        handleFrame
-      );
+      window.removeEventListener(audioAnimation.eventName, handleFrame);
     };
   }, []);
 
   const startServices = () => {
-    animationServiceContext.startAnimation();
+    audioAnimation.startAnimation();
+    standardAnimation.startAnimation();
     setAnimating(true);
   };
 
   const stopServices = () => {
-    animationServiceContext.stopAnimation();
+    audioAnimation.stopAnimation();
+    standardAnimation.stopAnimation();
     setAnimating(false);
   };
 
@@ -106,6 +110,7 @@ function App() {
             <ForegroundCanvas image={selectedImage} x={x} y={y} />
           </div>
         )}
+        <AudioCanvas />
         <StatsContainer />
       </div>
       <div>
