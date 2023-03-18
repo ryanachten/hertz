@@ -12,16 +12,13 @@ class AudioService {
   private readonly _context = new AudioContext();
   private readonly _analyser = this._context.createAnalyser();
   private _waveform: OscillatorType = "sine";
+  private _sampleState: Sample | null = null;
 
   /**
    * Plays as an audio sample given various parameters
    */
-  public playSample({
-    rgb,
-    attackTime,
-    sweepLength,
-    releaseTime,
-  }: Sample): Note {
+  public playSample(sample: Sample): Note {
+    const { rgb, attackTime, sweepLength, releaseTime } = sample;
     const time = this._context.currentTime;
     const note = this.rgbToNote(rgb);
 
@@ -40,6 +37,7 @@ class AudioService {
     osc.start(time);
     osc.stop(time + sweepLength);
 
+    this._sampleState = sample;
     return note;
   }
 
@@ -61,6 +59,8 @@ class AudioService {
 
     return timeDomainData;
   }
+
+  public getCurrentSampleState = () => this._sampleState;
 
   /**
    * Maps RGB value to note

@@ -4,6 +4,7 @@ import AnimationControls from "./components/AnimationControls";
 import AudioCanvas from "./components/AudioCanvas";
 import BackgroundCanvas from "./components/BackgroundCanvas";
 import ForegroundCanvas from "./components/ForegroundCanvas";
+import SampleCanvas from "./components/SampleCanvas";
 import StatsContainer from "./components/StatsContainer";
 import { IMAGE_OPTIONS } from "./constants/settings";
 import useDispatchRandomSettings from "./hooks/useDispatchRandomSettings";
@@ -112,6 +113,7 @@ function App() {
           </div>
         )}
         <AudioCanvas />
+        <SampleCanvas />
         <StatsContainer />
       </div>
       <div>
