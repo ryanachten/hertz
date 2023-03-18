@@ -23,6 +23,7 @@ const ForegroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
         handleFrame
       );
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Resize canvas on image update

@@ -49,6 +49,7 @@ function App() {
       stopServices();
       window.removeEventListener(audioAnimation.eventName, handleFrame);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startServices = () => {
