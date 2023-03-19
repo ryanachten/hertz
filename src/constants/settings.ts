@@ -1,4 +1,6 @@
 import { RangeSettingKey } from "../reducers/settings.reducer";
+import perlinNoise from "../assets/perlin_noise.png";
+import srgb from "../assets/srgb.webp";
 
 export type ImageOption = {
   name: string;
@@ -8,11 +10,11 @@ export type ImageOption = {
 export const IMAGE_OPTIONS: ImageOption[] = [
   {
     name: "Perlin noise",
-    path: "./assets/perlin_noise.png",
+    path: perlinNoise,
   },
   {
     name: "SRGB Spectrum",
-    path: "./assets/srgb.webp",
+    path: srgb,
   },
 ];
 

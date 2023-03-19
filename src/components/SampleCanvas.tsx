@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import { StandardAnimationContext } from "../services/AnimationService";
 import { AudioServiceContext, Sample } from "../services/AudioService";
+import theme from "../theme";
 
 type Signal = keyof Sample;
 
@@ -40,10 +41,10 @@ const SampleCanvas = () => {
     const width = canvas.width;
 
     ctx.clearRect(0, 0, width, height);
-    drawSignal("attackTime", 2, "red", canvas);
-    drawSignal("releaseTime", 2, "blue", canvas);
-    drawSignal("sweepLength", 10, "green", canvas);
-    drawSignal("rgb", 255, "orange", canvas);
+    drawSignal("attackTime", 2, theme.info, canvas);
+    drawSignal("releaseTime", 2, theme.accent, canvas);
+    drawSignal("sweepLength", 10, theme.success, canvas);
+    drawSignal("rgb", 255, theme.neutral, canvas);
   };
 
   const drawSignal = (
@@ -65,8 +66,7 @@ const SampleCanvas = () => {
     ctx.beginPath();
     for (let i = 0; i < queueLength; i++) {
       const sample = queue[i];
-      if (!sample) return;
-      const v = sample[signal] / maxValue;
+      const v = sample ? sample[signal] / maxValue : 0;
       const y = height - v * height;
 
       if (i === 0) {
@@ -77,13 +77,19 @@ const SampleCanvas = () => {
 
       x += sliceWidth;
     }
-
-    ctx.lineTo(width, height / 2);
     ctx.stroke();
   };
 
   return (
-    <canvas height={300} width={800} className="max-w-lg" ref={canvasRef} />
+    <div>
+      <canvas height={300} width={800} className="max-w-lg" ref={canvasRef} />
+      <div className="mt-2 mb-4">
+        <div className="badge badge-neutral badge-s mr-2">Frequency</div>
+        <div className="badge badge-info badge-s mr-2">Attack Time</div>
+        <div className="badge badge-accent badge-s mr-2">Release Time</div>
+        <div className="badge badge-success badge-s">Sweep Length</div>
+      </div>
+    </div>
   );
 };
 

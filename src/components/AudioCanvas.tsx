@@ -47,8 +47,6 @@ const AudioCanvas = () => {
 
       x += sliceWidth;
     }
-
-    ctx.lineTo(width, height / 2);
     ctx.stroke();
   };
 
