@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 export interface ISelectControl {
   id: string;
+  className?: string;
   label: string;
   value: string;
   disabled?: boolean;
@@ -14,10 +15,11 @@ const SelectControl = ({
   label,
   value,
   disabled,
+  className,
   onChange,
   children,
 }: ISelectControl) => (
-  <div className="form-control">
+  <div className={`form-control ${className}`}>
     <label className="label" htmlFor={id}>
       {label}
     </label>

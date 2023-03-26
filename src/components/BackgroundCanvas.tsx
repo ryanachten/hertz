@@ -113,7 +113,7 @@ const BackgroundCanvas = forwardRef(
       dispatch(updateNote(note));
     };
 
-    return <canvas className="h-full w-full" ref={canvasRef} />;
+    return <canvas className="w-full aspect-square" ref={canvasRef} />;
   }
 );
 

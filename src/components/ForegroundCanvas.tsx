@@ -38,7 +38,10 @@ const ForegroundCanvas = ({ x, y }: IBackgroundCanvas) => {
   };
 
   return (
-    <canvas className="h-full w-full absolute top-0 left-0" ref={canvasRef} />
+    <canvas
+      className="w-full aspect-square absolute top-0 left-0"
+      ref={canvasRef}
+    />
   );
 };
 

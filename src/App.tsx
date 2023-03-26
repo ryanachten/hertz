@@ -104,10 +104,10 @@ function App() {
   };
 
   return (
-    <main className="grid grid-cols-1 md:grid-cols-2">
-      {selectedImage !== undefined && (
-        <div className="max-h-screen p-8 flex flex-col">
-          <div className="relative grow">
+    <main className="grid grid-cols-1 md:grid-cols-2 max-w-screen-xl mx-auto">
+      {selectedImage && (
+        <div className="max-h-screen p-4 md:p-8 flex flex-col">
+          <div className="relative">
             <BackgroundCanvas
               ref={backgroundRef}
               image={selectedImage}
@@ -115,34 +115,9 @@ function App() {
               y={y}
             />
             <ForegroundCanvas x={x} y={y} />
-          </div>
-          <StatsContainer />
-        </div>
-      )}
-      <div className="max-h-screen p-8 overflow-y-auto">
-        {isAnimating && (
-          <>
-            <AudioCanvas />
-            <SampleCanvas />
-          </>
-        )}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {isAnimating ? (
-            <button className="btn btn-primary" onClick={() => stopServices()}>
-              Stop
-            </button>
-          ) : (
-            <button className="btn btn-primary" onClick={() => startServices()}>
-              Play
-            </button>
-          )}
-          <div className="form-control">
-            <label className="label" htmlFor="srcImage">
-              Source image
-            </label>
             <select
               name="srcImage"
-              className="select"
+              className="select absolute top-2 left-2"
               onChange={async (e) => {
                 selectedImagePath.current = e.target.value;
                 await setupCanvas();
@@ -155,7 +130,30 @@ function App() {
               ))}
             </select>
           </div>
+          <StatsContainer />
         </div>
+      )}
+      <div className="p-4 md:p-8">
+        <div className="flex justify-between mb-8">
+          <span className="uppercase font-mono tracking-wider text-2xl font-semibold">
+            Hertz
+          </span>
+          {isAnimating ? (
+            <button className="btn btn-primary" onClick={() => stopServices()}>
+              Stop
+            </button>
+          ) : (
+            <button className="btn btn-primary" onClick={() => startServices()}>
+              Play
+            </button>
+          )}
+        </div>
+        {isAnimating && (
+          <>
+            <AudioCanvas />
+            <SampleCanvas />
+          </>
+        )}
         <AnimationControls />
       </div>
     </main>
