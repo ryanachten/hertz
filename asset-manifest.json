@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/hertz/static/css/main.de43a2e2.css",
-    "main.js": "/hertz/static/js/main.83460622.js",
+    "main.css": "/hertz/static/css/main.84937814.css",
+    "main.js": "/hertz/static/js/main.152b768e.js",
     "static/js/787.fd88af5a.chunk.js": "/hertz/static/js/787.fd88af5a.chunk.js",
     "static/media/perlin_noise.png": "/hertz/static/media/perlin_noise.de216a92f7b61afd9ee1.png",
     "static/media/srgb.webp": "/hertz/static/media/srgb.0e496645ba34d93ea1ff.webp",
     "index.html": "/hertz/index.html",
-    "main.de43a2e2.css.map": "/hertz/static/css/main.de43a2e2.css.map",
-    "main.83460622.js.map": "/hertz/static/js/main.83460622.js.map",
+    "main.84937814.css.map": "/hertz/static/css/main.84937814.css.map",
+    "main.152b768e.js.map": "/hertz/static/js/main.152b768e.js.map",
     "787.fd88af5a.chunk.js.map": "/hertz/static/js/787.fd88af5a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.de43a2e2.css",
-    "static/js/main.83460622.js"
+    "static/css/main.84937814.css",
+    "static/js/main.152b768e.js"
   ]
 }
