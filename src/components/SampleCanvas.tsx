@@ -26,7 +26,6 @@ const SampleCanvas = () => {
         handleStandardFrame
       );
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStandardFrame = () => {

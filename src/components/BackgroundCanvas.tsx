@@ -47,15 +47,10 @@ const BackgroundCanvas = forwardRef(
           handleFrame
         );
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Draw image
-    useEffect(
-      () => draw(),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [brightness, image, sampleSize]
-    );
+    useEffect(() => draw(), [brightness, image, sampleSize]);
 
     const draw = () => {
       const background = canvasRef.current;

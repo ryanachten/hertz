@@ -24,7 +24,6 @@ const ForegroundCanvas = ({ x, y }: IBackgroundCanvas) => {
         handleFrame
       );
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFrame = () => {

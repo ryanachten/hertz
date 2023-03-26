@@ -11,7 +11,6 @@ const useResponsiveCanvas = (
     return () => {
       window.removeEventListener("resize", syncClientDimensions);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**
