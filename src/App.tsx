@@ -30,6 +30,7 @@ function App() {
 
   const [isAnimating, setAnimating] = useState(false);
   const imageRef = useRef<HTMLImageElement>();
+  const backgroundRef = useRef<HTMLCanvasElement>(null);
   const x = useRef(0);
   const y = useRef(0);
   const tickRef = useRef(0);
@@ -72,14 +73,14 @@ function App() {
     }
 
     const size = sampleSizeRef.current;
-    const image = imageRef.current;
+    const background = backgroundRef.current;
 
-    if (!image) return;
+    if (!background) return;
 
-    if (x.current + size >= image.width - 1) {
+    if (x.current + size >= background.width - 1) {
       x.current = 0;
 
-      if (y.current + size >= image.height - 1) {
+      if (y.current + size >= background.height - 1) {
         y.current = 0;
       } else {
         y.current += size;
@@ -104,48 +105,59 @@ function App() {
   };
 
   return (
-    <main className="flex flex-wrap gap-4 justify-center">
-      <div>
-        {selectedImage !== undefined && (
-          <div className="relative">
-            <BackgroundCanvas image={selectedImage} x={x} y={y} />
-            <ForegroundCanvas image={selectedImage} x={x} y={y} />
+    <main className="grid grid-cols-1 md:grid-cols-2">
+      {selectedImage !== undefined && (
+        <div className="max-h-screen p-8 flex flex-col">
+          <div className="relative grow">
+            <BackgroundCanvas
+              ref={backgroundRef}
+              image={selectedImage}
+              x={x}
+              y={y}
+            />
+            <ForegroundCanvas x={x} y={y} />
           </div>
-        )}
-        <AudioCanvas />
-        <SampleCanvas />
-        <StatsContainer />
-      </div>
-      <div>
-        {isAnimating ? (
-          <button className="btn btn-primary" onClick={() => stopServices()}>
-            Stop
-          </button>
-        ) : (
-          <button className="btn btn-primary" onClick={() => startServices()}>
-            Play
-          </button>
-        )}
-        <div className="form-control">
-          <label className="label" htmlFor="srcImage">
-            Source image
-          </label>
-          <select
-            name="srcImage"
-            className="select"
-            onChange={async (e) => {
-              selectedImagePath.current = e.target.value;
-              await setupCanvas();
-            }}
-          >
-            {IMAGE_OPTIONS.map((opt) => (
-              <option key={opt.path} value={opt.path}>
-                {opt.name}
-              </option>
-            ))}
-          </select>
+          <StatsContainer />
         </div>
-        {isAnimating && <AnimationControls />}
+      )}
+      <div className="max-h-screen p-8 overflow-y-auto">
+        {isAnimating && (
+          <>
+            <AudioCanvas />
+            <SampleCanvas />
+          </>
+        )}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          {isAnimating ? (
+            <button className="btn btn-primary" onClick={() => stopServices()}>
+              Stop
+            </button>
+          ) : (
+            <button className="btn btn-primary" onClick={() => startServices()}>
+              Play
+            </button>
+          )}
+          <div className="form-control">
+            <label className="label" htmlFor="srcImage">
+              Source image
+            </label>
+            <select
+              name="srcImage"
+              className="select"
+              onChange={async (e) => {
+                selectedImagePath.current = e.target.value;
+                await setupCanvas();
+              }}
+            >
+              {IMAGE_OPTIONS.map((opt) => (
+                <option key={opt.path} value={opt.path}>
+                  {opt.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <AnimationControls />
       </div>
     </main>
   );

@@ -35,7 +35,7 @@ const AnimationControls = () => {
   );
 
   return (
-    <>
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
       <div className="form-control">
         <label className="cursor-pointer label">
           <span className="label-text">Autoplay</span>
@@ -89,7 +89,7 @@ const AnimationControls = () => {
           }
         />
       ))}
-    </>
+    </div>
   );
 };
 

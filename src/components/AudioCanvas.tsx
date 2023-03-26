@@ -1,12 +1,14 @@
 import { useContext, useEffect, useRef } from "react";
 import { StandardAnimationContext } from "../services/AnimationService";
 import { AudioServiceContext } from "../services/AudioService";
+import useResponsiveCanvas from "../hooks/useResponsiveCanvas";
 
 const AudioCanvas = () => {
   const audioServiceContext = useContext(AudioServiceContext);
   const standardAnimation = useContext(StandardAnimationContext);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  useResponsiveCanvas(canvasRef, () => handleStandardFrame());
 
   // Setup animation handler
   useEffect(() => {
@@ -50,9 +52,7 @@ const AudioCanvas = () => {
     ctx.stroke();
   };
 
-  return (
-    <canvas height={300} width={800} className="max-w-lg" ref={canvasRef} />
-  );
+  return <canvas className="w-full h-44 mb-4" ref={canvasRef} />;
 };
 
 export default AudioCanvas;

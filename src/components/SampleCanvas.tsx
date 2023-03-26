@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
+import useResponsiveCanvas from "../hooks/useResponsiveCanvas";
 import { StandardAnimationContext } from "../services/AnimationService";
 import { AudioServiceContext, Sample } from "../services/AudioService";
 import theme from "../theme";
@@ -14,6 +15,7 @@ const SampleCanvas = () => {
   );
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  useResponsiveCanvas(canvasRef, () => handleStandardFrame());
 
   // Setup animation handler
   useEffect(() => {
@@ -81,14 +83,14 @@ const SampleCanvas = () => {
   };
 
   return (
-    <div>
-      <canvas height={300} width={800} className="max-w-lg" ref={canvasRef} />
-      <div className="mt-2 mb-4">
+    <div className="flex mb-4">
+      <div className="flex flex-col justify-between w-28 py-2">
         <div className="badge badge-neutral badge-s mr-2">Frequency</div>
         <div className="badge badge-info badge-s mr-2">Attack Time</div>
         <div className="badge badge-accent badge-s mr-2">Release Time</div>
         <div className="badge badge-success badge-s">Sweep Length</div>
       </div>
+      <canvas className="grow h-44" ref={canvasRef} />
     </div>
   );
 };

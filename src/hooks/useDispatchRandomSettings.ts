@@ -16,8 +16,6 @@ const useDispatchRandomSettings = (tick: number, interval: number) => {
   useEffect(() => {
     if (tick % interval !== 0) return;
 
-    console.log("update!");
-
     RANGE_OPTIONS.forEach(({ key, max, min }) => {
       if (shouldAnimate()) {
         dispatch(updateRangeSetting({ key, value: randomValue(max, min) }));

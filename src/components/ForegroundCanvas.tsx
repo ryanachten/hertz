@@ -1,18 +1,19 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import { useRangeSettingRef } from "../hooks/useSelectorRef";
+import useResponsiveCanvas from "../hooks/useResponsiveCanvas";
 import { AudioAnimationContext } from "../services/AnimationService";
 
 export interface IBackgroundCanvas {
-  image: HTMLImageElement;
   x: MutableRefObject<number>;
   y: MutableRefObject<number>;
 }
 
-const ForegroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
+const ForegroundCanvas = ({ x, y }: IBackgroundCanvas) => {
   const animationServiceContext = useContext(AudioAnimationContext);
 
   const sampleSize = useRangeSettingRef("sampleSize");
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  useResponsiveCanvas(canvasRef);
 
   // Setup animation handler
   useEffect(() => {
@@ -26,15 +27,6 @@ const ForegroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Resize canvas on image update
-  useEffect(() => {
-    const foreground = canvasRef.current;
-    if (!foreground) return;
-
-    foreground.height = image.height;
-    foreground.width = image.width;
-  }, [image]);
-
   const handleFrame = () => {
     const foreground = canvasRef.current;
     const foregroundCtx = foreground?.getContext("2d");
@@ -46,7 +38,9 @@ const ForegroundCanvas = ({ image, x, y }: IBackgroundCanvas) => {
     foregroundCtx.strokeRect(x.current, y.current, size, size);
   };
 
-  return <canvas className="max-w-lg absolute top-0 left-0" ref={canvasRef} />;
+  return (
+    <canvas className="h-full w-full absolute top-0 left-0" ref={canvasRef} />
+  );
 };
 
 export default ForegroundCanvas;
