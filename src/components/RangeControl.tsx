@@ -35,7 +35,7 @@ const RangeControl = ({
         }}
       />
       <input
-        className="input w-24"
+        className="input w-20"
         type="number"
         value={value}
         disabled={disabled}

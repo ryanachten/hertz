@@ -4,6 +4,7 @@ import AnimationControls from "./components/AnimationControls";
 import AudioCanvas from "./components/AudioCanvas";
 import BackgroundCanvas from "./components/BackgroundCanvas";
 import ForegroundCanvas from "./components/ForegroundCanvas";
+import Logo from "./components/Logo";
 import SampleCanvas from "./components/SampleCanvas";
 import StatsContainer from "./components/StatsContainer";
 import { IMAGE_OPTIONS } from "./constants/settings";
@@ -106,7 +107,7 @@ function App() {
   return (
     <main className="grid grid-cols-1 md:grid-cols-2 max-w-screen-xl mx-auto">
       {selectedImage && (
-        <div className="max-h-screen p-4 md:p-8 flex flex-col">
+        <div className="p-4 md:p-8 flex flex-col">
           <div className="relative">
             <BackgroundCanvas
               ref={backgroundRef}
@@ -133,18 +134,22 @@ function App() {
           <StatsContainer />
         </div>
       )}
-      <div className="p-4 md:p-8">
-        <div className="flex justify-between mb-8">
-          <span className="uppercase font-mono tracking-wider text-2xl font-semibold">
-            Hertz
-          </span>
+      <div className="p-4 sm:p-8">
+        <div className="flex justify-between mb-4 items-center">
+          <Logo className="h-10 mr-4" />
           {isAnimating ? (
-            <button className="btn btn-primary" onClick={() => stopServices()}>
+            <button
+              className="btn btn-primary text-base-100"
+              onClick={() => stopServices()}
+            >
               Stop
             </button>
           ) : (
-            <button className="btn btn-primary" onClick={() => startServices()}>
-              Play
+            <button
+              className="btn btn-primary text-base-100"
+              onClick={() => startServices()}
+            >
+              Start
             </button>
           )}
         </div>
